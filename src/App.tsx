@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Question, GameState } from './types';
-import { getDailyQuestion, getQuestionNumber } from './utils/storage';
+import { getDailyQuestion } from './utils/storage';
 import './App.css';
 
 function App() {
@@ -13,7 +13,6 @@ function App() {
     favoriteQuestionIds: [],
   });
   const [loading, setLoading] = useState(true);
-  const [currentLevel, setCurrentLevel] = useState<'simple' | 'intermediate' | 'advanced'>('simple');
 
   useEffect(() => {
     initGame();
@@ -59,7 +58,6 @@ function App() {
   }
 
   const question = gameState.todayQuestion;
-  const questionNum = getQuestionNumber();
 
   return (
     <div className="app">
@@ -72,34 +70,10 @@ function App() {
 
       <main className="main-content">
         <div className="question-card">
-          <p className="date-label">📅 Question #{questionNum}</p>
           <h2 className="question-title">{question.question}</h2>
           
-          <div className="answer-level-selector">
-            <button 
-              className={`level-btn ${currentLevel === 'simple' ? 'active' : ''}`}
-              onClick={() => setCurrentLevel('simple')}
-            >
-              👶 Age 5-8
-            </button>
-            <button 
-              className={`level-btn ${currentLevel === 'intermediate' ? 'active' : ''}`}
-              onClick={() => setCurrentLevel('intermediate')}
-            >
-              🧒 Age 10-12
-            </button>
-            <button 
-              className={`level-btn ${currentLevel === 'advanced' ? 'active' : ''}`}
-              onClick={() => setCurrentLevel('advanced')}
-            >
-              🎓 Age 13+
-            </button>
-          </div>
-
           <div className="answer-content">
-            {currentLevel === 'simple' && <p>{question.answerSimple}</p>}
-            {currentLevel === 'intermediate' && <p>{question.answerIntermediate}</p>}
-            {currentLevel === 'advanced' && <p>{question.answerAdvanced}</p>}
+            <p>{question.answerSimple}</p>
           </div>
 
           <div className="fun-fact-section">
@@ -117,7 +91,7 @@ function App() {
             <button 
               className="share-btn"
               onClick={() => {
-                const shareText = `🤔 Daily Ask Why #${questionNum}:\n\n"${question.question}"\n\nGet your answer at dailyaskwhy.com 🚀\n\n#DailyAskWhy #CuriousMinds`;
+                const shareText = `🤔 Daily Ask Why:\n\n"${question.question}"\n\nGet your answer at dailyaskwhy.com 🚀\n\n#DailyAskWhy #CuriousMinds`;
                 if (navigator.share) {
                   navigator.share({ text: shareText });
                 } else {
