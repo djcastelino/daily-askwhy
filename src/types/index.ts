@@ -1,7 +1,7 @@
 export interface Question {
   id: number;
   question: string;
-  category: "Science" | "Nature" | "Space" | "Human Body" | "Animals" | "Technology" | "History" | "Physics" | "Earth";
+  category: "Science" | "Nature" | "Space" | "Human Body" | "Animals" | "Technology" | "History" | "Physics" | "Earth" | "Food";
   difficulty: "easy" | "medium" | "hard"; // Internal tracking only, NOT displayed in UI
   answerSimple: string; // Age 5-8
   answerIntermediate: string; // Age 10-12
