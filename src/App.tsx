@@ -13,6 +13,7 @@ function App() {
     favoriteQuestionIds: [],
   });
   const [loading, setLoading] = useState(true);
+  const [showArchive, setShowArchive] = useState(false);
 
   useEffect(() => {
     initGame();
@@ -23,13 +24,17 @@ function App() {
       const todayDateOnly = new Date().toISOString().split('T')[0];
       const currentQuestion: Question = getDailyQuestion();
       
+      // Load saved favorites from localStorage
+      const savedFavorites = localStorage.getItem('dailyaskwhy_favorites');
+      const favoriteIds = savedFavorites ? JSON.parse(savedFavorites) : [];
+      
       const initialGameState: GameState = {
         todayQuestion: currentQuestion,
         lastPlayedDate: todayDateOnly,
         currentStreak: 0,
         maxStreak: 0,
         questionsAnswered: 0,
-        favoriteQuestionIds: [],
+        favoriteQuestionIds: favoriteIds,
       };
       
       setGameState(initialGameState);
@@ -39,6 +44,42 @@ function App() {
       setLoading(false);
     }
   }
+
+  const handleToggleFavorite = () => {
+    if (!gameState.todayQuestion) return;
+    
+    const questionId = gameState.todayQuestion.id;
+    const isFavorite = gameState.favoriteQuestionIds.includes(questionId);
+    
+    let newFavorites;
+    if (isFavorite) {
+      newFavorites = gameState.favoriteQuestionIds.filter(id => id !== questionId);
+    } else {
+      newFavorites = [...gameState.favoriteQuestionIds, questionId];
+    }
+    
+    localStorage.setItem('dailyaskwhy_favorites', JSON.stringify(newFavorites));
+    setGameState({
+      ...gameState,
+      favoriteQuestionIds: newFavorites
+    });
+  };
+
+  const handleShare = () => {
+    if (!gameState.todayQuestion) return;
+    
+    const shareText = `🤔 Daily Ask Why:\n\n"${gameState.todayQuestion.question}"\n\nGet your answer at dailyaskwhy.com 🚀\n\n#DailyAskWhy #CuriousMinds`;
+    
+    if (navigator.share) {
+      navigator.share({ text: shareText }).catch(() => {
+        navigator.clipboard.writeText(shareText);
+        alert('Copied to clipboard!');
+      });
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert('Copied to clipboard!');
+    }
+  };
 
   if (loading) {
     return (
@@ -58,13 +99,21 @@ function App() {
   }
 
   const question = gameState.todayQuestion;
+  const isFavorite = gameState.favoriteQuestionIds.includes(question.id);
 
   return (
     <div className="app">
       <header className="header">
         <div className="header-content">
-          <h1 className="title">🤔 DAILY ASK WHY</h1>
-          <p className="subtitle">Curious Minds, Daily Answers</p>
+          <div className="header-center">
+            <h1 className="title">🤔 DAILY ASK WHY</h1>
+            <p className="subtitle">Curious Minds, Daily Answers</p>
+          </div>
+          <div className="header-right">
+            <button onClick={() => setShowArchive(true)} className="header-icon-btn">
+              📚
+            </button>
+          </div>
         </div>
       </header>
 
@@ -87,24 +136,37 @@ function App() {
             </p>
           </div>
 
-          <div className="share-section">
-            <button 
-              className="share-btn"
-              onClick={() => {
-                const shareText = `🤔 Daily Ask Why:\n\n"${question.question}"\n\nGet your answer at dailyaskwhy.com 🚀\n\n#DailyAskWhy #CuriousMinds`;
-                if (navigator.share) {
-                  navigator.share({ text: shareText });
-                } else {
-                  navigator.clipboard.writeText(shareText);
-                  alert('Copied to clipboard!');
-                }
-              }}
-            >
+          <div className="action-buttons">
+            <button className="share-btn" onClick={handleShare}>
               📤 Share
+            </button>
+            <button 
+              className={`favorite-btn ${isFavorite ? 'active' : ''}`}
+              onClick={handleToggleFavorite}
+            >
+              {isFavorite ? '❤️' : '🤍'} {isFavorite ? 'Saved' : 'Save'}
             </button>
           </div>
         </div>
       </main>
+
+      {showArchive && (
+        <div className="modal-overlay" onClick={() => setShowArchive(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>📚 Archive</h2>
+              <button className="modal-close-btn" onClick={() => setShowArchive(false)}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <p style={{ textAlign: 'center', color: 'var(--color-text-medium)' }}>
+                Yesterday's question feature coming soon!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
