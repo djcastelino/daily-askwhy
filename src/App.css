@@ -152,6 +152,104 @@
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
 }
 
+.archive-banner {
+  background: #ede9fe;
+  border: 2px solid var(--color-primary-light);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  width: 100%;
+  max-width: 550px;
+}
+
+.back-to-today-btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.archive-modal .modal-body {
+  padding: 1.5rem;
+}
+
+.archive-info {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--color-text-medium);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #ede9fe;
+  border-radius: 8px;
+}
+
+.archive-item {
+  background: white;
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.archive-item:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+}
+
+.archive-item.yesterday {
+  border-color: var(--color-primary-light);
+  background: linear-gradient(135deg, #faf5ff 0%, white 100%);
+}
+
+.archive-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.archive-question-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.archive-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.archive-category {
+  background: #ede9fe;
+  color: var(--color-primary-dark);
+  padding: 0.3rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.archive-status {
+  margin-top: 0.5rem;
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 600px) {
   .question-card {
     padding: 1.5rem;

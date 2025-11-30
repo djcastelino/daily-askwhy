@@ -38,6 +38,37 @@ export function getQuestionNumber(date: Date = new Date()): number {
   return (seed % QUESTIONS.length) + 1; // +1 to make it 1-indexed
 }
 
+// Get yesterday's question
+export function getYesterdaysQuestion(): Question {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return getDailyQuestion(yesterday);
+}
+
+// Load archive question state (has user read this archived question?)
+export function loadArchiveQuestion(questionId: number): { hasRead: boolean } | null {
+  try {
+    const key = `dailyaskwhy_archive_${questionId}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (error) {
+    console.error("Error loading archive question:", error);
+  }
+  return null;
+}
+
+// Save archive question state
+export function saveArchiveQuestion(questionId: number, hasRead: boolean): void {
+  try {
+    const key = `dailyaskwhy_archive_${questionId}`;
+    localStorage.setItem(key, JSON.stringify({ hasRead }));
+  } catch (error) {
+    console.error("Error saving archive question:", error);
+  }
+}
+
 // Load game state from local storage
 export function loadGameState(): GameState | null {
   try {

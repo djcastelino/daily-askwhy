@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Question, GameState } from './types';
-import { getDailyQuestion } from './utils/storage';
+import { getDailyQuestion, getYesterdaysQuestion, loadArchiveQuestion, saveArchiveQuestion } from './utils/storage';
 import './App.css';
 
 function App() {
@@ -14,6 +14,7 @@ function App() {
   });
   const [loading, setLoading] = useState(true);
   const [showArchive, setShowArchive] = useState(false);
+  const [archiveMode, setArchiveMode] = useState(false);
 
   useEffect(() => {
     initGame();
@@ -61,6 +62,16 @@ function App() {
     }
   };
 
+  const handleSelectArchiveQuestion = (question: Question) => {
+    setArchiveMode(true);
+    setGameState({
+      ...gameState,
+      todayQuestion: question
+    });
+    saveArchiveQuestion(question.id, true);
+    setShowArchive(false);
+  };
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -90,6 +101,21 @@ function App() {
       </header>
 
       <main className="main-content">
+        {archiveMode && (
+          <div className="archive-banner">
+            📚 Archive Mode
+            <button 
+              onClick={() => {
+                setArchiveMode(false);
+                initGame();
+              }}
+              className="back-to-today-btn"
+            >
+              ← Back to Today
+            </button>
+          </div>
+        )}
+
         <div className="question-card">
           <h2 className="question-title">{question.question}</h2>
           
@@ -121,17 +147,33 @@ function App() {
 
       {showArchive && (
         <div className="modal-overlay" onClick={() => setShowArchive(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content archive-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>📚 Archive</h2>
+              <h2>📚 Previous Questions</h2>
               <button className="modal-close-btn" onClick={() => setShowArchive(false)}>
                 ×
               </button>
             </div>
             <div className="modal-body">
-              <p style={{ textAlign: 'center', color: 'var(--color-text-medium)' }}>
-                Yesterday's question feature coming soon!
-              </p>
+              <div className="archive-info">
+                💡 Missed yesterday? Catch up now!
+              </div>
+
+              <div className="archive-item yesterday" onClick={() => {
+                const yesterdayQuestion = getYesterdaysQuestion();
+                handleSelectArchiveQuestion(yesterdayQuestion);
+              }}>
+                <div className="archive-label">⏮️ YESTERDAY</div>
+                <div className="archive-question-title">
+                  {getYesterdaysQuestion().question}
+                </div>
+                <div className="archive-meta">
+                  <span className="archive-category">{getYesterdaysQuestion().category}</span>
+                </div>
+                {loadArchiveQuestion(getYesterdaysQuestion().id)?.hasRead && (
+                  <div className="archive-status">✓ Read</div>
+                )}
+              </div>
             </div>
           </div>
         </div>
