@@ -84,15 +84,8 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-content">
-          <div className="header-center">
-            <h1 className="title">🤔 DAILY ASK WHY</h1>
-            <p className="subtitle">Curious Minds, Daily Answers</p>
-          </div>
-          <div className="header-right">
-            <button onClick={() => setShowArchive(true)} className="header-icon-btn">
-              📚
-            </button>
-          </div>
+          <h1 className="title">🤔 DAILY ASK WHY</h1>
+          <p className="subtitle">Curious Minds, Daily Answers</p>
         </div>
       </header>
 
@@ -118,6 +111,9 @@ function App() {
           <div className="action-buttons">
             <button className="share-btn" onClick={handleShare}>
               📤 Share
+            </button>
+            <button className="archive-btn" onClick={() => setShowArchive(true)}>
+              📚 Archive
             </button>
           </div>
         </div>
