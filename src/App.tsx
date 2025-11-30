@@ -45,26 +45,6 @@ function App() {
     }
   }
 
-  const handleToggleFavorite = () => {
-    if (!gameState.todayQuestion) return;
-    
-    const questionId = gameState.todayQuestion.id;
-    const isFavorite = gameState.favoriteQuestionIds.includes(questionId);
-    
-    let newFavorites;
-    if (isFavorite) {
-      newFavorites = gameState.favoriteQuestionIds.filter(id => id !== questionId);
-    } else {
-      newFavorites = [...gameState.favoriteQuestionIds, questionId];
-    }
-    
-    localStorage.setItem('dailyaskwhy_favorites', JSON.stringify(newFavorites));
-    setGameState({
-      ...gameState,
-      favoriteQuestionIds: newFavorites
-    });
-  };
-
   const handleShare = () => {
     if (!gameState.todayQuestion) return;
     
@@ -99,7 +79,6 @@ function App() {
   }
 
   const question = gameState.todayQuestion;
-  const isFavorite = gameState.favoriteQuestionIds.includes(question.id);
 
   return (
     <div className="app">
@@ -139,12 +118,6 @@ function App() {
           <div className="action-buttons">
             <button className="share-btn" onClick={handleShare}>
               📤 Share
-            </button>
-            <button 
-              className={`favorite-btn ${isFavorite ? 'active' : ''}`}
-              onClick={handleToggleFavorite}
-            >
-              {isFavorite ? '❤️' : '🤍'} {isFavorite ? 'Saved' : 'Save'}
             </button>
           </div>
         </div>
