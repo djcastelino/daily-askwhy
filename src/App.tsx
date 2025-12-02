@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Question, GameState } from './types';
 import { getDailyQuestion, getYesterdaysQuestion, loadArchiveQuestion, saveArchiveQuestion } from './utils/storage';
+import { initGA, trackPageView, trackQuestionView, trackShare, trackArchiveView, trackArchiveQuestion } from './utils/analytics';
 import './App.css';
 
 function App() {
@@ -17,6 +18,10 @@ function App() {
   const [archiveMode, setArchiveMode] = useState(false);
 
   useEffect(() => {
+    // Initialize Google Analytics
+    initGA();
+    trackPageView(window.location.pathname);
+    
     initGame();
   }, []);
 
@@ -24,6 +29,9 @@ function App() {
     try {
       const todayDateOnly = new Date().toISOString().split('T')[0];
       const currentQuestion: Question = getDailyQuestion();
+      
+      // Track question view
+      trackQuestionView(currentQuestion.question, currentQuestion.category);
       
       // Load saved favorites from localStorage
       const savedFavorites = localStorage.getItem('dailyaskwhy_favorites');
@@ -49,6 +57,9 @@ function App() {
   const handleShare = () => {
     if (!gameState.todayQuestion) return;
     
+    // Track share event
+    trackShare(gameState.todayQuestion.question);
+    
     const shareText = `🤔 Daily Ask Why:\n\n"${gameState.todayQuestion.question}"\n\nGet your answer at dailyaskwhy.com 🚀\n\n#DailyAskWhy #CuriousMinds`;
     
     if (navigator.share) {
@@ -63,6 +74,7 @@ function App() {
   };
 
   const handleSelectArchiveQuestion = (question: Question) => {
+    trackArchiveQuestion(question.id);
     setArchiveMode(true);
     setGameState({
       ...gameState,
@@ -138,7 +150,10 @@ function App() {
             <button className="share-btn" onClick={handleShare}>
               📤 Share
             </button>
-            <button className="archive-btn" onClick={() => setShowArchive(true)}>
+            <button className="archive-btn" onClick={() => {
+              trackArchiveView();
+              setShowArchive(true);
+            }}>
               📚 Archive
             </button>
           </div>
